@@ -46,6 +46,13 @@ public class DatabaseSeed implements CommandLineRunner {
                 .email("joao@fiap.com.br")
                 .password(passwordEncoder.encode("123"))
         );
+
+        userRepository.save(
+            new User()
+                .name("Giovana")
+                .email("giovana@fiap.com.br")
+                .password(passwordEncoder.encode("321"))
+        );
         
     }
     
