@@ -1,10 +1,10 @@
 package br.com.fiap.epictaskapi.controller;
 
-import java.util.Optional;
-
 import javax.validation.Valid;
 
-import org.springframework.beans.BeanUtils;
+import br.com.fiap.epictaskapi.dto.request.UserSaveForm;
+import br.com.fiap.epictaskapi.dto.request.UserUpdateForm;
+import br.com.fiap.epictaskapi.dto.response.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -13,21 +13,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import br.com.fiap.epictaskapi.model.User;
 import br.com.fiap.epictaskapi.service.UserService;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/user/")
 public class UserController {
     
     @Autowired
@@ -35,41 +27,39 @@ public class UserController {
 
     // Listar todos os usuários 
     @GetMapping
-    public Page<User> listAll(@PageableDefault(size = 10) Pageable pageable){
-        return userService.listAll(pageable);
+    public ResponseEntity<Page<UserResponse>> listAll(@PageableDefault(size = 10) Pageable pageable){
+        Page<UserResponse> pageUserResponse = userService.listAll(pageable);
+        return ResponseEntity.ok().body(pageUserResponse);
     }
 
     // Detalhes do usuário
     @GetMapping("{id}")
     @Cacheable("user")
-    public ResponseEntity<User> show(@PathVariable Long id){
-        return ResponseEntity.of( userService.findById(id) );   
+    public ResponseEntity<UserResponse> show(@PathVariable Long id){
+        UserResponse userResponse = userService.findById(id);
+        return ResponseEntity.ok().body(userResponse);
     }
 
     // Cadastrar usuário
     @PostMapping
     @CacheEvict(value="users", allEntries = true)
-    public ResponseEntity<User> create(@RequestBody @Valid User user){
-        userService.save(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(user);
+    public ResponseEntity<UserResponse> create(@RequestBody @Valid UserSaveForm userSaveForm){
+        UserResponse userResponse = userService.save(userSaveForm);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userResponse);
     }
 
     // Deletar usuário
     @DeleteMapping("{id}")
     @CacheEvict(value="users", allEntries = true)
-    public ResponseEntity<Object> destroy(@PathVariable Long id){
-        Optional<User> optional = userService.findById(id);
-
-        if (optional.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-
+    public ResponseEntity<?> destroy(@PathVariable Long id){
         userService.deleteById(id);
-
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 
     }
 
-
-
-
-
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<UserResponse> update(@PathVariable Long id, @RequestBody UserUpdateForm userUpdateForm){
+        UserResponse userResponse = userService.update(userUpdateForm, id);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userResponse);
+    }
 }

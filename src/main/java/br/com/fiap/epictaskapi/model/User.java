@@ -1,9 +1,9 @@
 package br.com.fiap.epictaskapi.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -14,7 +14,6 @@ import javax.persistence.Table;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.util.Assert;
 
 @Entity
 @Table(name = "TB_USER")
@@ -25,45 +24,64 @@ public class User implements UserDetails {
     private String name;
     private String email;
     private String password;
+    
+    public User() {
+    	
+    }
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    private List<Role> roles;
-
-    public User name(String name){
-        Assert.notNull(name, "name is required");
+    public User(String name, String email, String password) {
         this.name = name;
-        return this;
-    }
-
-    public User email(String email){
-        Assert.notNull(email, "email is required");
         this.email = email;
-        return this;
+        this.password = password;
     }
 
-    public User password(String password){
-        Assert.notNull(password, "password is required");
-        this.password = password;
-        return this;
-    }
+    public Long getId() {
+		return id;
+	}
 
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-    public String getEmail() {
-        return email;
-    }
-    public void setEmail(String email) {
-        this.email = email;
-    }
-    public String getPassword() {
-        return password;
-    }
-    public void setPassword(String password) {
-        this.password = password;
+	public String getName() {
+		return name;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public List<Role> getRoles() {
+		return roles;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public void setRoles(List<Role> roles) {
+		this.roles = roles;
+	}
+
+
+
+	@ManyToMany(fetch = FetchType.EAGER)
+    private List<Role> roles = new ArrayList<>();
+
+    public void addRole(Role role){
+        this.roles.add(role);
     }
 
     @Override
