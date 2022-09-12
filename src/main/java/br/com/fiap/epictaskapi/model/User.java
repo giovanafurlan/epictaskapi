@@ -3,7 +3,6 @@ package br.com.fiap.epictaskapi.model;
 import java.util.Collection;
 import java.util.List;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -94,6 +93,10 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public static Object builder() {
+        return null;
     }
 
 }
