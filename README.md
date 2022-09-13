@@ -2,4 +2,4 @@
 
 Deploy
 
-[https://epictask-rateit.herokuapp.com/api/user](https://epictask-rateit.herokuapp.com/api/user)
+[https://epictask-rateit.herokuapp.com](https://epictask-rateit.herokuapp.com)
