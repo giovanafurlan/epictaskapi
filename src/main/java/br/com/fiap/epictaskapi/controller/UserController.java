@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -62,6 +64,23 @@ public class UserController {
         userService.deleteById(id);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    // Atualiza usuário
+    @PutMapping("{id}")
+    @CacheEvict(value="users", allEntries = true)
+    public ResponseEntity<User> update(@PathVariable Long id, @RequestBody @Valid User newUser){
+        Optional<User> optional = userService.findById(id);
+
+        if (optional.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+        var user = optional.get();
+        BeanUtils.copyProperties(newUser, user);
+        user.setId(id);
+
+        userService.save(user);
+
+        return ResponseEntity.ok(user);
     }
 
 }

@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import br.com.fiap.epictaskapi.model.Task;
 import br.com.fiap.epictaskapi.model.User;
+import br.com.fiap.epictaskapi.repository.RoleRepository;
 import br.com.fiap.epictaskapi.repository.TaskRepository;
 import br.com.fiap.epictaskapi.repository.UserRepository;
 
@@ -23,6 +24,9 @@ public class DatabaseSeed implements CommandLineRunner {
 
     @Autowired
     PasswordEncoder passwordEncoder;
+
+    @Autowired
+    RoleRepository roleRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -52,7 +56,7 @@ public class DatabaseSeed implements CommandLineRunner {
                 .email("giovana@fiap.com.br")
                 .password(passwordEncoder.encode("321"))
         );
-        
+
     }
-    
+
 }
